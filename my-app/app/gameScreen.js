@@ -9,10 +9,10 @@ import {
   Modal,
   Button,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Dimensions,ScrollView,KeyboardAvoidingView } from 'react-native'; // for game to dynamically resize regardless of phone size 
 import wordListRaw from '../scripts/telugu_common_words_100.json'; 
 import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // or any icon library you use
 import * as Speech from 'expo-speech'; // to get speech
 
 // Only include words with transliteration ≤ 10 characters
@@ -27,6 +27,8 @@ const GameScreen = () => {
     const [isGameOver, setIsGameOver] = useState(false);
     const [guesses, setGuesses] = useState([]);
     const [didWin, setDidWin] = useState(false);
+    const [showInstructions, setShowInstructions] = useState(false);
+
 
     // Boxes shrink when the word is long.
     // Max size of 50px (for shorter words).
@@ -152,6 +154,78 @@ const GameScreen = () => {
                         }}>
                             Telugu Wordle
                         </Text>
+                
+                {/* How to play button  */}
+                <TouchableOpacity
+                onPress={() => setShowInstructions(true)}
+                style={{
+                    position: 'absolute',
+                    top: 50,
+                    right: 20,
+                    zIndex: 10,
+                }}
+                >
+                <Ionicons name="information-circle" size={30} color="#6aaa64" />
+                </TouchableOpacity>
+
+                <Modal visible={showInstructions} transparent animationType="fade">
+                    <View style={{
+                        flex: 1,
+                        backgroundColor: 'rgba(0,0,0,0.6)',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <View style={{
+                        backgroundColor: '#1e1e1e',
+                        padding: 25,
+                        borderRadius: 12,
+                        maxWidth: '85%',
+                        }}>
+                        <Text style={{ fontSize: 22, color: '#fff', fontWeight: '600', marginBottom: 10 }}>
+                            How to Play
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
+                            1. Type your guess using transliteration (e.g. <Text style={{ fontWeight: 'bold' }}>dosthulu</Text>)
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
+                            2. Hit return/enter to submit your guess
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
+                            3. Colors show feedback:
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#6aaa64', marginLeft: 10 }}>
+                            🟩 Green: correct letter and position
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#c9b458', marginLeft: 10 }}>
+                            🟨 Yellow: correct letter, wrong position
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#787c7e', marginLeft: 10 }}>
+                            ⬜️ Gray: not in the word
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#ddd', marginTop: 6 }}>
+                            4. You get 6 tries to guess the word
+                        </Text>
+                        <Text style={{ fontSize: 16, color: '#ddd', marginTop: 6 }}>
+                            5. Use the 🔊 button to hear the word in Telugu!
+                        </Text>
+
+                        <TouchableOpacity
+                            onPress={() => setShowInstructions(false)}
+                            style={{
+                            marginTop: 20,
+                            alignSelf: 'center',
+                            paddingVertical: 8,
+                            paddingHorizontal: 16,
+                            backgroundColor: '#6aaa64',
+                            borderRadius: 8,
+                            }}
+                        >
+                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Got it!</Text>
+                        </TouchableOpacity>
+                        </View>
+                    </View>
+                    </Modal>
+
 
             <Text style={{ fontSize: 18, marginBottom: 20, textAlign: 'center', color: '#ffffff' }}>
               Guess the word ({currentWord.translit.length} letters)

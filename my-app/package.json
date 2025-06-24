@@ -1,9 +1,13 @@
 {
   "name": "my-app",
   "main": "expo-router/entry",
+  "homepage": "https://chandinipalem.github.io/TeluguWordle",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "build": "expo export",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -23,6 +27,7 @@
     "expo-image": "~2.3.0",
     "expo-linking": "~7.1.5",
     "expo-router": "~5.1.0",
+    "expo-speech": "~13.1.7",
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.5",
@@ -36,15 +41,15 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "expo-speech": "~13.1.7"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
-    "typescript": "~5.8.3",
     "eslint": "^9.25.0",
-    "eslint-config-expo": "~9.2.0"
+    "eslint-config-expo": "~9.2.0",
+    "gh-pages": "^6.3.0",
+    "typescript": "~5.8.3"
   },
   "private": true
 }
