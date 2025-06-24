@@ -1,0 +1,627 @@
+[
+  {
+    "translit": "amma",
+    "telugu": "అమ్మ",
+    "definition": "mother"
+  },
+  {
+    "translit": "nanna",
+    "telugu": "నాన్న",
+    "definition": "father"
+  },
+  {
+    "translit": "cheppandi",
+    "telugu": "చెప్పండి",
+    "definition": "please say / tell"
+  },
+  {
+    "translit": "meeru",
+    "telugu": "మీరు",
+    "definition": "you (formal)"
+  },
+  {
+    "translit": "nenu",
+    "telugu": "నేను",
+    "definition": "I / me"
+  },
+  {
+    "translit": "vaddu",
+    "telugu": "వద్దు",
+    "definition": "no / don't want"
+  },
+  {
+    "translit": "baga",
+    "telugu": "బాగా",
+    "definition": "well / good"
+  },
+  {
+    "translit": "chaala",
+    "telugu": "చాలా",
+    "definition": "very / a lot"
+  },
+  {
+    "translit": "vinandi",
+    "telugu": "వినండి",
+    "definition": "please listen"
+  },
+  {
+    "translit": "tisuko",
+    "telugu": "తీసుకో",
+    "definition": "take it"
+  },
+  {
+    "translit": "randi",
+    "telugu": "రండి",
+    "definition": "come (formal)"
+  },
+  {
+    "translit": "vellipondi",
+    "telugu": "వెళ్ళిపొండి",
+    "definition": "go away (formal)"
+  },
+  {
+    "translit": "ledu",
+    "telugu": "లేదు",
+    "definition": "no / not there"
+  },
+  {
+    "translit": "undhi",
+    "telugu": "ఉంది",
+    "definition": "there is / it is"
+  },
+  {
+    "translit": "eppudu",
+    "telugu": "ఎప్పుడు",
+    "definition": "when"
+  },
+  {
+    "translit": "ekkada",
+    "telugu": "ఎక్కడ",
+    "definition": "where"
+  },
+  {
+    "translit": "emiti",
+    "telugu": "ఏమిటి",
+    "definition": "what is it"
+  },
+  {
+    "translit": "entha",
+    "telugu": "ఎంత",
+    "definition": "how much"
+  },
+  {
+    "translit": "santosham",
+    "telugu": "సంతోషం",
+    "definition": "happiness / happy"
+  },
+  {
+    "translit": "manchi",
+    "telugu": "మంచి",
+    "definition": "good / nice"
+  },
+  {
+    "translit": "cheyyi",
+    "telugu": "చేయి",
+    "definition": "hand"
+  },
+  {
+    "translit": "kallu",
+    "telugu": "కళ్లు",
+    "definition": "eyes"
+  },
+  {
+    "translit": "vinuta",
+    "telugu": "వినుత",
+    "definition": "fame / hearing"
+  },
+  {
+    "translit": "paalu",
+    "telugu": "పాలు",
+    "definition": "milk"
+  },
+  {
+    "translit": "neellu",
+    "telugu": "నీళ్ళు",
+    "definition": "water"
+  },
+  {
+    "translit": "tinali",
+    "telugu": "తినాలి",
+    "definition": "should eat"
+  },
+  {
+    "translit": "paduko",
+    "telugu": "పడుకో",
+    "definition": "sleep / lie down"
+  },
+  {
+    "translit": "levandi",
+    "telugu": "లెవండి",
+    "definition": "get up (formal)"
+  },
+  {
+    "translit": "vastanu",
+    "telugu": "వస్తాను",
+    "definition": "I will come"
+  },
+  {
+    "translit": "vellanu",
+    "telugu": "వెళ్ళాను",
+    "definition": "I went"
+  },
+  {
+    "translit": "choosthunnanu",
+    "telugu": "చూస్తున్నాను",
+    "definition": "I am watching"
+  },
+  {
+    "translit": "matladandi",
+    "telugu": "మాట్లాడండి",
+    "definition": "please speak"
+  },
+  {
+    "translit": "telusu",
+    "telugu": "తెలుసు",
+    "definition": "I know"
+  },
+  {
+    "translit": "theliyadu",
+    "telugu": "తెలియదు",
+    "definition": "I don't know"
+  },
+  {
+    "translit": "aadavallu",
+    "telugu": "ఆడవాళ్లు",
+    "definition": "women"
+  },
+  {
+    "translit": "abbayilu",
+    "telugu": "అబ్బాయిలు",
+    "definition": "boys"
+  },
+  {
+    "translit": "pillalu",
+    "telugu": "పిల్లలు",
+    "definition": "children"
+  },
+  {
+    "translit": "intiki",
+    "telugu": "ఇంటికి",
+    "definition": "to home"
+  },
+  {
+    "translit": "paniki",
+    "telugu": "పనికి",
+    "definition": "to work"
+  },
+  {
+    "translit": "tirigi",
+    "telugu": "తిరిగి",
+    "definition": "again / back"
+  },
+  {
+    "translit": "sayantram",
+    "telugu": "సాయంత్రం",
+    "definition": "evening"
+  },
+  {
+    "translit": "subhodhayam",
+    "telugu": "సుభోదయం",
+    "definition": "good morning"
+  },
+  {
+    "translit": "shubharatri",
+    "telugu": "శుభరాత్రి",
+    "definition": "good night"
+  },
+  {
+    "translit": "dhanyavadamulu",
+    "telugu": "ధన్యవాదములు",
+    "definition": "thank you"
+  },
+  {
+    "translit": "dayachesi",
+    "telugu": "దయచేసి",
+    "definition": "please"
+  },
+  {
+    "translit": "ksaminchandi",
+    "telugu": "క్షమించండి",
+    "definition": "sorry / forgive me"
+  },
+  {
+    "translit": "bagunnara",
+    "telugu": "బాగున్నారా",
+    "definition": "how are you? (formal)"
+  },
+  {
+    "translit": "bagunnanu",
+    "telugu": "బాగున్నాను",
+    "definition": "I am fine"
+  },
+  {
+    "translit": "mamuluga",
+    "telugu": "మామూలుగా",
+    "definition": "as usual"
+  },
+  {
+    "translit": "em cheyyali",
+    "telugu": "ఏం చేయాలి",
+    "definition": "what should I do?"
+  },
+    {
+      "translit": "abhayam",
+      "telugu": "అభయం",
+      "definition": "protection / refuge"
+    },
+    {
+      "translit": "kshanam",
+      "telugu": "క్షణం",
+      "definition": "moment / instant"
+    },
+    {
+      "translit": "kalalu",
+      "telugu": "కలలు",
+      "definition": "dreams"
+    },
+    {
+      "translit": "bhavishyat",
+      "telugu": "భవిష్యత్",
+      "definition": "future"
+    },
+    {
+      "translit": "gatam",
+      "telugu": "గతం",
+      "definition": "past"
+    },
+    {
+      "translit": "yathartham",
+      "telugu": "యథార్థం",
+      "definition": "reality / truth"
+    },
+    {
+      "translit": "sambharalu",
+      "telugu": "సంబరాలు",
+      "definition": "celebrations"
+    },
+    {
+      "translit": "prayogam",
+      "telugu": "ప్రయోగం",
+      "definition": "experiment / use"
+    },
+    {
+      "translit": "ratham",
+      "telugu": "రథం",
+      "definition": "chariot"
+    },
+    {
+      "translit": "shanti",
+      "telugu": "శాంతి",
+      "definition": "peace"
+    },
+    {
+      "translit": "bhasha",
+      "telugu": "భాష",
+      "definition": "language"
+    },
+    {
+      "translit": "lokam",
+      "telugu": "లోకం",
+      "definition": "world"
+    },
+    {
+      "translit": "samasya",
+      "telugu": "సమస్య",
+      "definition": "problem"
+    },
+    {
+      "translit": "nirnayam",
+      "telugu": "నిర్ణయం",
+      "definition": "decision"
+    },
+    {
+      "translit": "sahayam",
+      "telugu": "సహాయం",
+      "definition": "help / assistance"
+    },
+    {
+      "translit": "bhakthi",
+      "telugu": "భక్తి",
+      "definition": "devotion"
+    },
+    {
+      "translit": "dharmam",
+      "telugu": "ధర్మం",
+      "definition": "righteousness / duty"
+    },
+    {
+      "translit": "sneham",
+      "telugu": "స్నేహం",
+      "definition": "friendship"
+    },
+    {
+      "translit": "pariksha",
+      "telugu": "పరీక్ష",
+      "definition": "exam / test"
+    },
+    {
+      "translit": "prashna",
+      "telugu": "ప్రశ్న",
+      "definition": "question"
+    },
+    {
+      "translit": "uttaram",
+      "telugu": "ఉత్తరం",
+      "definition": "answer / north"
+    },
+    {
+      "translit": "karya",
+      "telugu": "కార్య",
+      "definition": "task / function"
+    },
+    {
+      "translit": "aalochana",
+      "telugu": "ఆలోచన",
+      "definition": "thought / idea"
+    },
+    {
+      "translit": "gamyam",
+      "telugu": "గమ్యం",
+      "definition": "goal / destination"
+    },
+    {
+      "translit": "kala",
+      "telugu": "కల",
+      "definition": "dream / art"
+    },
+    {
+        "translit": "vijayam",
+        "telugu": "విజయం",
+        "definition": "victory / success"
+    },
+      {
+        "translit": "poratam",
+        "telugu": "పోరాటం",
+        "definition": "struggle / fight"
+      },
+      {
+        "translit": "swaram",
+        "telugu": "స్వరము",
+        "definition": "voice / sound"
+      },
+      {
+        "translit": "ananda",
+        "telugu": "ఆనందం",
+        "definition": "joy / bliss"
+      },
+      {
+        "translit": "bhayam",
+        "telugu": "భయం",
+        "definition": "fear"
+      },
+      {
+        "translit": "sangathi",
+        "telugu": "సంగతి",
+        "definition": "matter / situation"
+      },
+      {
+        "translit": "sankalpam",
+        "telugu": "సంకల్పం",
+        "definition": "determination / resolution"
+      },
+      {
+        "translit": "gurtu",
+        "telugu": "గుర్తు",
+        "definition": "memory / mark / reminder"
+      },
+      {
+        "translit": "samayam",
+        "telugu": "సమయం",
+        "definition": "time"
+      },
+      {
+        "translit": "dikkulu",
+        "telugu": "దిక్కులు",
+        "definition": "directions"
+      },
+      {
+        "translit": "manishi",
+        "telugu": "మనిషి",
+        "definition": "human / person"
+      },
+      {
+        "translit": "dhairyam",
+        "telugu": "ధైర్యం",
+        "definition": "courage"
+      },
+      {
+        "translit": "jnapakam",
+        "telugu": "జ్ఞాపకం",
+        "definition": "remembrance / memory"
+      },
+      {
+        "translit": "punyamu",
+        "telugu": "పుణ్యం",
+        "definition": "virtue / good deed"
+      },
+      {
+        "translit": "chaduvu",
+        "telugu": "చదువు",
+        "definition": "education / reading"
+      },
+      {
+        "translit": "sevalu",
+        "telugu": "సేవలు",
+        "definition": "services"
+      },
+      {
+        "translit": "prapancham",
+        "telugu": "ప్రపంచం",
+        "definition": "universe / world"
+      },
+      {
+        "translit": "bhumi",
+        "telugu": "భూమి",
+        "definition": "earth / land"
+      },
+      {
+        "translit": "akasam",
+        "telugu": "ఆకాశం",
+        "definition": "sky"
+      },
+      {
+        "translit": "vela",
+        "telugu": "వేళ",
+        "definition": "time / moment"
+      },
+      {
+        "translit": "sambandham",
+        "telugu": "సంబంధం",
+        "definition": "relation / connection"
+      },
+      {
+        "translit": "sambhashana",
+        "telugu": "సంభాషణ",
+        "definition": "conversation / dialogue"
+      },
+      {
+        "translit": "bandham",
+        "telugu": "బంధం",
+        "definition": "bond / relationship"
+      },
+      {
+        "translit": "snehithudu",
+        "telugu": "స్నేహితుడు",
+        "definition": "friend (male)"
+      },
+      {
+        "translit": "kutumbam",
+        "telugu": "కుటుంబం",
+        "definition": "family"
+      },
+      {
+          "translit": "shiksha",
+          "telugu": "శిక్ష",
+          "definition": "punishment"
+        },
+        {
+          "translit": "sikshana",
+          "telugu": "శిక్షణ",
+          "definition": "training / education"
+        },
+        {
+          "translit": "vidya",
+          "telugu": "విద్య",
+          "definition": "knowledge / learning"
+        },
+        {
+          "translit": "vyakti",
+          "telugu": "వ్యక్తి",
+          "definition": "individual / person"
+        },
+        {
+          "translit": "sampada",
+          "telugu": "సంపద",
+          "definition": "wealth / treasure"
+        },
+        {
+          "translit": "bhavishyat",
+          "telugu": "భవిష్యత్",
+          "definition": "future"
+        },
+        {
+          "translit": "sadyam",
+          "telugu": "సద్యము",
+          "definition": "present (time)"
+        },
+        {
+          "translit": "sahaya",
+          "telugu": "సహాయ",
+          "definition": "help / aid"
+        },
+        {
+          "translit": "sankhya",
+          "telugu": "సంఖ్య",
+          "definition": "number"
+        },
+        {
+          "translit": "ganitha",
+          "telugu": "గణితం",
+          "definition": "mathematics"
+        },
+        {
+          "translit": "pariksha",
+          "telugu": "పరీక్ష",
+          "definition": "exam / test"
+        },
+        {
+          "translit": "prayatnam",
+          "telugu": "ప్రయత్నం",
+          "definition": "effort"
+        },
+        {
+          "translit": "prarthana",
+          "telugu": "ప్రార్థన",
+          "definition": "prayer"
+        },
+        {
+          "translit": "prerana",
+          "telugu": "ప్రేరణ",
+          "definition": "inspiration"
+        },
+        {
+          "translit": "satyam",
+          "telugu": "సత్యం",
+          "definition": "truth"
+        },
+        {
+          "translit": "asatyam",
+          "telugu": "అసత్యం",
+          "definition": "falsehood / lie"
+        },
+        {
+          "translit": "yatra",
+          "telugu": "యాత్ర",
+          "definition": "journey / travel"
+        },
+        {
+          "translit": "nadi",
+          "telugu": "నది",
+          "definition": "river"
+        },
+        {
+          "translit": "gundelu",
+          "telugu": "గుండెలు",
+          "definition": "hearts"
+        },
+        {
+          "translit": "katha",
+          "telugu": "కథ",
+          "definition": "story"
+        },
+        {
+          "translit": "lokam",
+          "telugu": "లోకం",
+          "definition": "world"
+        },
+        {
+          "translit": "sundaram",
+          "telugu": "సుందరం",
+          "definition": "beautiful"
+        },
+        {
+          "translit": "kashanam",
+          "telugu": "క్షణం",
+          "definition": "moment"
+        },
+        {
+          "translit": "dhyasa",
+          "telugu": "ధ్యాస",
+          "definition": "obsession / focus"
+        },
+        {
+          "translit": "nirnayam",
+          "telugu": "నిర్ణయం",
+          "definition": "decision"
+        }
+]
