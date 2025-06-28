@@ -24,7 +24,7 @@ export default {
       bundler: "metro",
       output: "static",
       favicon: "./assets/images/favicon.png",
-      basePath: "/TeluguWordle",
+      assetPrefix: "/TeluguWordle/",
       // 👇 Add this:
       build: {
         publicPath: "/TeluguWordle/",
