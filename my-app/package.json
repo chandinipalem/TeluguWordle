@@ -1,20 +1,17 @@
 {
   "name": "my-app",
   "main": "expo-router/entry",
-  "homepage": "https://chandinipalem.github.io/TeluguWordle",
+  "homepage": "https://chandinipalem.github.io/TeluguWordle/",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "build": "PUBLIC_URL='/TeluguWordle/' expo export --platform web",
-    "predeploy": "npm run build && node patch-base-tag.js",
-    "deploy": "gh-pages -d dist",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "serve:ghpages": "mkdir -p simulate-gh-pages/TeluguWordle && cp -r dist/* simulate-gh-pages/TeluguWordle && npx serve simulate-gh-pages --single"
-
+    "reset-project": "node ./scripts/reset-project.js",
+"predeploy": "expo export --platform web && node patch-base-tag.js && touch dist/.nojekyll",
+    "deploy": "gh-pages --nojekyll --dotfiles --message \"Deploy TeluguWordle\" -d dist"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -48,6 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
+    "cross-env": "^7.0.3",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "gh-pages": "^6.3.0",

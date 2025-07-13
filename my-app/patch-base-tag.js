@@ -1,24 +1,14 @@
-const fs = require('fs');
-const path = require('path');
+// patch-base-tag.js
+const fs = require("fs");
+const path = require("path");
 
-const filePath = path.join(__dirname, 'dist', 'index.html');
-const baseHref = '<base href="/TeluguWordle/">';
+const filePath = path.join(__dirname, "dist", "index.html");
 
-try {
-  let html = fs.readFileSync(filePath, 'utf8');
+let html = fs.readFileSync(filePath, "utf8");
 
-  // Inject base href if missing
-  if (!html.includes(baseHref)) {
-    html = html.replace('<head>', `<head>\n  ${baseHref}`);
-  }
+// Rewrite all root-relative paths to use the base path
+html = html.replace(/(href|src)="\/(?!TeluguWordle)/g, '$1="/TeluguWordle/');
 
-  // Replace hardcoded asset URLs
-  html = html
-    .replace(/(src|href)="\/(static|_expo|assets)/g, '$1="/TeluguWordle/$2')
-    .replace(/content="\/(static|_expo|assets)/g, 'content="/TeluguWordle/$1');
+fs.writeFileSync(filePath, html);
 
-  fs.writeFileSync(filePath, html, 'utf8');
-  console.log('✅ Patched index.html with base href and path fixes.');
-} catch (err) {
-  console.error('❌ Failed to patch index.html:', err);
-}
+console.log("✅ Patched base paths in dist/index.html");
