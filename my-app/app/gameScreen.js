@@ -9,13 +9,13 @@ import {
   Modal,
   Button,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+//import { Ionicons } from '@expo/vector-icons';
 import { Dimensions,ScrollView,KeyboardAvoidingView } from 'react-native'; // for game to dynamically resize regardless of phone size 
 import wordListRaw from '../scripts/telugu_common_words_100.json'; 
 import { TouchableOpacity } from 'react-native';
 import * as Speech from 'expo-speech'; // to get speech
 
-// Only include words with transliteration ≤ 10 characters
+// Only include words with transliteration ≤ 7 characters
 const wordList = wordListRaw.filter(word => word.translit.length <= 7);
 
 
@@ -41,6 +41,48 @@ const GameScreen = () => {
 
 
     const maxGuesses = 6;
+
+  const [typedText, setTypedText] = useState('');
+const [showCursor, setShowCursor] = useState(true);
+const fullText = 'Wordle';
+const isTypingRef = useRef(true); // ⬅️ track whether typing is active
+
+useEffect(() => {
+  let i = 0;
+  const typeInterval = setInterval(() => {
+    setTypedText(prev => {
+      const nextChar = fullText.charAt(i);
+      i++;
+
+      if (i === fullText.length) {
+        clearInterval(typeInterval);
+        isTypingRef.current = false; // mark typing as done
+      }
+
+      return prev + nextChar;
+    });
+  }, 200);
+
+  return () => clearInterval(typeInterval);
+}, []);
+
+useEffect(() => {
+  const blinkInterval = setInterval(() => {
+    setShowCursor(prev => {
+      // Stop blinking when typing is finished
+      if (!isTypingRef.current) {
+        clearInterval(blinkInterval);
+        return false;
+      }
+      return !prev;
+    });
+  }, 500);
+
+  return () => clearInterval(blinkInterval);
+}, []);
+
+
+
 
     useEffect(() => {
         // picks a random word from wordlist 
@@ -139,21 +181,36 @@ const GameScreen = () => {
             >
           <ScrollView contentContainerStyle={{
                 padding: 20,
+                paddingTop: 80,
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexGrow: 1,
                 }}>
 
                       {/* Title */}
-                        <Text style={{
-                            fontSize: 28,
-                            fontWeight: '600',
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 }}>
+                        <Text
+                          style={{
+                            fontSize: 40,
                             color: '#ffffff',
-                            marginBottom: 30,
-                            fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'sans-serif',
-                        }}>
-                            Telugu Wordle
+                            fontFamily: Platform.OS === 'web' ? 'Baloo Tamma 2' : 'sans-serif',
+                            marginRight: 8,
+                          }}
+                        >
+                          తెలుగు
                         </Text>
+                        <Text
+                          style={{
+                            fontSize: 40,
+                            color: '#ffffff',
+                            fontFamily: Platform.OS === 'web' ? 'monospace' : 'Courier',
+                          }}
+                        >
+                          {typedText}
+                          {showCursor && isTypingRef.current && '|'}
+                          
+                        </Text>
+                        </View>
                 
                 {/* How to play button  */}
                 <TouchableOpacity
@@ -165,7 +222,7 @@ const GameScreen = () => {
                     zIndex: 10,
                 }}
                 >
-                <Ionicons name="information-circle" size={30} color="#6aaa64" />
+                <Text style={{ fontSize: 26 }}>ℹ️</Text>
                 </TouchableOpacity>
 
                 <Modal visible={showInstructions} transparent animationType="fade">
@@ -334,7 +391,7 @@ const GameScreen = () => {
                 style={{ marginLeft: 10 }}
                 accessibilityLabel="Pronounce Telugu word"
             >
-                <Ionicons name="volume-high" size={24} color="#6aaa64" />
+                <Text style={{ fontSize: 22 }}>🔊</Text>
             </TouchableOpacity>
             <Text style={{
               fontSize: 16,
