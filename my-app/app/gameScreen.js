@@ -2,439 +2,481 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  TextInput, // keyboard input
+  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
   Modal,
   Button,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
-//import { Ionicons } from '@expo/vector-icons';
-import { Dimensions,ScrollView,KeyboardAvoidingView } from 'react-native'; // for game to dynamically resize regardless of phone size 
-import wordListRaw from '../scripts/telugu_common_words_100.json'; 
-import { TouchableOpacity } from 'react-native';
-import * as Speech from 'expo-speech'; // to get speech
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  withSequence,
+  Easing,
+  interpolate,
+} from 'react-native-reanimated';
+import * as Speech from 'expo-speech';
+import wordListRaw from '../scripts/telugu_common_words_100.json';
 
-// Only include words with transliteration ≤ 7 characters
-const wordList = wordListRaw.filter(word => word.translit.length <= 7);
-
+const wordList = wordListRaw.filter(word => word.translit.length <= 5);
 
 const GameScreen = () => {
-    const [currentWord, setCurrentWord] = useState(null);
-    const [currentGuess, setCurrentGuess] = useState([]); 
-    const [cursor, setCursor] = useState(0); 
-    const inputRef = useRef(null); 
-    const [isGameOver, setIsGameOver] = useState(false);
-    const [guesses, setGuesses] = useState([]);
-    const [didWin, setDidWin] = useState(false);
-    const [showInstructions, setShowInstructions] = useState(false);
+  const [currentWord, setCurrentWord] = useState(null);
+  const [currentGuess, setCurrentGuess] = useState([]);
+  const [cursor, setCursor] = useState(0);
+  const inputRef = useRef(null);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [guesses, setGuesses] = useState([]);
+  const [didWin, setDidWin] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
-
-    // Boxes shrink when the word is long.
-    // Max size of 50px (for shorter words).
-    const screenWidth = Dimensions.get('window').width;
-    const boxMargin = 4 * 2; // 4px margin on each side
-    const totalPadding = 40; // side padding in container
-    const usableWidth = screenWidth - totalPadding;
-   // const boxSize = Math.min(50, Math.floor((usableWidth / currentWord.translit.length) - boxMargin));
-
-
-
-    const maxGuesses = 6;
+  const screenWidth = Dimensions.get('window').width;
+  const boxMargin = 4 * 2;
+  const totalPadding = 40;
+  const usableWidth = screenWidth - totalPadding;
+  const maxGuesses = 6;
 
   const [typedText, setTypedText] = useState('');
-const [showCursor, setShowCursor] = useState(true);
-const fullText = 'Wordle';
-const isTypingRef = useRef(true); // ⬅️ track whether typing is active
+  const [showCursor, setShowCursor] = useState(true);
+  const fullText = 'Wordle';
+  const isTypingRef = useRef(true);
 
-useEffect(() => {
-  let i = 0;
-  const typeInterval = setInterval(() => {
-    setTypedText(prev => {
-      const nextChar = fullText.charAt(i);
-      i++;
+  // Y2K Color Scheme
+  const colors = {
+    primary: '#6B3F69',
+    secondary: '#8D5F8C',
+    tertiary: '#A376A2',
+    accent: '#DDC3C3',
+    correct: '#6B3F69',
+    present: '#DDC3C3',
+    absent: '#171317ff',
+    background: '#1a1a1a',
+  };
 
-      if (i === fullText.length) {
-        clearInterval(typeInterval);
-        isTypingRef.current = false; // mark typing as done
-      }
-
-      return prev + nextChar;
-    });
-  }, 200);
-
-  return () => clearInterval(typeInterval);
-}, []);
-
-useEffect(() => {
-  const blinkInterval = setInterval(() => {
-    setShowCursor(prev => {
-      // Stop blinking when typing is finished
-      if (!isTypingRef.current) {
-        clearInterval(blinkInterval);
-        return false;
-      }
-      return !prev;
-    });
-  }, 500);
-
-  return () => clearInterval(blinkInterval);
-}, []);
-
-
-
-
-    useEffect(() => {
-        // picks a random word from wordlist 
-        const newWord = wordList[Math.floor(Math.random() * wordList.length)]; 
-        setCurrentWord(newWord); 
-        console.log('the word is'); 
-        console.log(newWord); 
-
-        setCurrentGuess([]); 
-        setCursor(0); 
-    }, []); 
-
-    const handleKeyPress = ({ nativeEvent }) => {
-        const key = nativeEvent.key; // gets the key that was pressed 
-
-        if(!currentWord || isGameOver) return; 
-        if(key == 'Backspace'){
-            if(cursor > 0 ){
-                const updated = [...currentGuess]; // makes a copy of the current guess 
-                updated[cursor - 1] = ''; 
-                setCurrentGuess(updated); 
-                setCursor(cursor - 1); 
-            }
+  useEffect(() => {
+    let i = 0;
+    const typeInterval = setInterval(() => {
+      setTypedText(prev => {
+        const nextChar = fullText.charAt(i);
+        i++;
+        if (i === fullText.length) {
+          clearInterval(typeInterval);
+          isTypingRef.current = false;
         }
-        // A-Z or a-z
-        else if (/^[a-zA-Z]$/.test(key)) {
-            if(cursor < currentWord.translit.length){
-                const updated = [...currentGuess]; 
-                updated[cursor] = key.toLowerCase(); 
-                setCurrentGuess(updated); 
-                setCursor(cursor + 1); 
-            }
+        return prev + nextChar;
+      });
+    }, 200);
+    return () => clearInterval(typeInterval);
+  }, []);
+
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setShowCursor(prev => {
+        if (!isTypingRef.current) {
+          clearInterval(blinkInterval);
+          return false;
         }
-        // when guess is entered
-        else if(key == 'Enter'){
-            // can only submit if full word length is entered 
-            if(currentGuess.length === currentWord.translit.length &&
-                currentGuess.every(letter => letter)
-            ){
-                const guessStr = currentGuess.join(''); 
-                const newGuesses = [...guesses, guessStr]; 
+        return !prev;
+      });
+    }, 500);
+    return () => clearInterval(blinkInterval);
+  }, []);
 
-                setGuesses(newGuesses); 
-                setCurrentGuess([]); 
-                setCursor(0); 
+  useEffect(() => {
+    const newWord = wordList[Math.floor(Math.random() * wordList.length)];
+    setCurrentWord(newWord);
+    console.log('the word is', newWord);
+    setCurrentGuess([]);
+    setCursor(0);
+  }, []);
 
-                // win or out of tries 
-                const isCorrect = guessStr === currentWord.translit; 
-                const isOutOfTries = newGuesses.length === maxGuesses; 
-
-                if(isCorrect || isOutOfTries){
-                    setIsGameOver (true); 
-                    setDidWin(isCorrect); 
-                }
-            }
-        }
-    }; 
-
-    const getBoxColor = (letter, idx, guess, solution) => {
-        if (!letter) return '#eee'; // empty box background
-      
-        if (letter === solution[idx]) {
-          return '#6aaa64'; // green
-        } else if (solution.includes(letter)) {
-          return '#c9b458'; // yellow
-        } else {
-          return '#787c7e'; // gray
-        }
-      };
-
-      const speakerButton = (text) => {
-        console.log('Speaking:', text); // Debug log
-        Speech.speak(text, {
-            language: 'te-IN',
-            onDone: () => console.log('Speech finished'),
-            onError: (error) => console.error('Speech error:', error),
-          });
-      };
-
+  const handleKeyPress = ({ nativeEvent }) => {
+    const key = nativeEvent.key;
+    if (!currentWord || isGameOver) return;
     
-      
+    if (key === 'Backspace') {
+      if (cursor > 0) {
+        const updated = [...currentGuess];
+        updated[cursor - 1] = '';
+        setCurrentGuess(updated);
+        setCursor(cursor - 1);
+      }
+    } else if (/^[a-zA-Z]$/.test(key)) {
+      if (cursor < currentWord.translit.length) {
+        const updated = [...currentGuess];
+        updated[cursor] = key.toLowerCase();
+        setCurrentGuess(updated);
+        setCursor(cursor + 1);
+      }
+    } else if (key === 'Enter') {
+      if (
+        currentGuess.length === currentWord.translit.length &&
+        currentGuess.every(letter => letter)
+      ) {
+        const guessStr = currentGuess.join('');
+        const newGuesses = [...guesses, guessStr];
+        setGuesses(newGuesses);
+        setCurrentGuess([]);
+        setCursor(0);
 
+        const isCorrect = guessStr === currentWord.translit;
+        const isOutOfTries = newGuesses.length === maxGuesses;
 
-    if(!currentWord) return <Text> Loading word... </Text>; 
-    const boxSize = Math.min(
-        50,
-        Math.floor((usableWidth / currentWord.translit.length) - boxMargin)
-      );
+        if (isCorrect || isOutOfTries) {
+          setIsGameOver(true);
+          setDidWin(isCorrect);
+        }
+      }
+    }
+  };
 
+  const getBoxColor = (letter, idx, guess, solution) => {
+    if (!letter) return 'transparent';
+    if (letter === solution[idx]) return colors.correct;
+    if (solution.includes(letter)) return colors.present;
+    return colors.absent;
+  };
 
-      return (
-        <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
-             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                style={{ flex: 1, backgroundColor: '#2c2d33' }}
+  const speakerButton = (text) => {
+    Speech.speak(text, {
+      language: 'te-IN',
+      onDone: () => console.log('Speech finished'),
+      onError: (error) => console.error('Speech error:', error),
+    });
+  };
+
+  if (!currentWord) return <Text>Loading word...</Text>;
+
+  const boxSize = Math.min(
+    60,
+    Math.floor((usableWidth / currentWord.translit.length) - boxMargin)
+  );
+
+  return (
+    <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1, backgroundColor: colors.background }}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            padding: 20,
+            paddingTop: 80,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
+          {/* Title with Y2K gradient effect */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 40 }}>
+            <Text
+              style={{
+                fontSize: 44,
+                color: colors.accent,
+                fontFamily: Platform.OS === 'web' ? 'Baloo Tamma 2' : 'sans-serif',
+                marginRight: 8,
+                textShadowColor: colors.secondary,
+                textShadowOffset: { width: 2, height: 2 },
+                textShadowRadius: 4,
+              }}
             >
-          <ScrollView contentContainerStyle={{
-                padding: 20,
-                paddingTop: 80,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexGrow: 1,
-                }}>
-
-                      {/* Title */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 }}>
-                        <Text
-                          style={{
-                            fontSize: 40,
-                            color: '#ffffff',
-                            fontFamily: Platform.OS === 'web' ? 'Baloo Tamma 2' : 'sans-serif',
-                            marginRight: 8,
-                          }}
-                        >
-                          తెలుగు
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 40,
-                            color: '#ffffff',
-                            fontFamily: Platform.OS === 'web' ? 'monospace' : 'Courier',
-                          }}
-                        >
-                          {typedText}
-                          {showCursor && isTypingRef.current && '|'}
-                          
-                        </Text>
-                        </View>
-                
-                {/* How to play button  */}
-                <TouchableOpacity
-                onPress={() => setShowInstructions(true)}
-                style={{
-                    position: 'absolute',
-                    top: 50,
-                    right: 20,
-                    zIndex: 10,
-                }}
-                >
-                <Text style={{ fontSize: 26 }}>ℹ️</Text>
-                </TouchableOpacity>
-
-                <Modal visible={showInstructions} transparent animationType="fade">
-                    <View style={{
-                        flex: 1,
-                        backgroundColor: 'rgba(0,0,0,0.6)',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                        <View style={{
-                        backgroundColor: '#1e1e1e',
-                        padding: 25,
-                        borderRadius: 12,
-                        maxWidth: '85%',
-                        }}>
-                        <Text style={{ fontSize: 22, color: '#fff', fontWeight: '600', marginBottom: 10 }}>
-                            How to Play
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
-                            1. Type your guess using transliteration (e.g. <Text style={{ fontWeight: 'bold' }}>dosthulu</Text>)
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
-                            2. Hit return/enter to submit your guess
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#ddd', marginBottom: 6 }}>
-                            3. Colors show feedback:
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#6aaa64', marginLeft: 10 }}>
-                            🟩 Green: correct letter and position
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#c9b458', marginLeft: 10 }}>
-                            🟨 Yellow: correct letter, wrong position
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#787c7e', marginLeft: 10 }}>
-                            ⬜️ Gray: not in the word
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#ddd', marginTop: 6 }}>
-                            4. You get 6 tries to guess the word
-                        </Text>
-                        <Text style={{ fontSize: 16, color: '#ddd', marginTop: 6 }}>
-                            5. Use the 🔊 button to hear the word in Telugu!
-                        </Text>
-
-                        <TouchableOpacity
-                            onPress={() => setShowInstructions(false)}
-                            style={{
-                            marginTop: 20,
-                            alignSelf: 'center',
-                            paddingVertical: 8,
-                            paddingHorizontal: 16,
-                            backgroundColor: '#6aaa64',
-                            borderRadius: 8,
-                            }}
-                        >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Got it!</Text>
-                        </TouchableOpacity>
-                        </View>
-                    </View>
-                    </Modal>
-
-
-            <Text style={{ fontSize: 18, marginBottom: 20, textAlign: 'center', color: '#ffffff' }}>
-              Guess the word ({currentWord.translit.length} letters)
+              తెలుగు
             </Text>
-      
-            <View style={{ justifyContent: 'center' }}>
-              {Array.from({ length: maxGuesses }).map((_, rowIndex) => {
-                const guess =
-                  rowIndex < guesses.length
-                    ? guesses[rowIndex].split('')
-                    : rowIndex === guesses.length
-                    ? currentGuess
-                    : [];
-      
-                return (
-                  <View
-                    key={rowIndex}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      marginBottom: 8,
-                    }}
-                  >
-                    {Array.from({ length: currentWord.translit.length }).map(
-                      (_, colIndex) => {
-                        const letter = guess[colIndex] || '';
-                        const color =
-                          rowIndex < guesses.length
-                            ? getBoxColor(
-                                letter,
-                                colIndex,
-                                guess,
-                                currentWord.translit
-                              )
-                            : '#eee';
-      
-                        return (
-                          <View
-                            key={colIndex}
-                            style={{
-                              width: boxSize,
-                              height: boxSize,
-                              margin: 4,
-                              borderWidth: 1,
-                              borderColor: '#999',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              backgroundColor: color,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: boxSize * 0.5,
-                                fontWeight: 'bold',
-                                color: color === '#eee' ? '#000' : '#fff',
-                              }}
-                            >
-                              {letter.toUpperCase()}
-                            </Text>
-                          </View>
-                        );
-                      }
-                    )}
-                  </View>
-                );
-              })}
+            <Text
+              style={{
+                fontSize: 44,
+                color: colors.tertiary,
+                fontFamily: Platform.OS === 'web' ? 'monospace' : 'Courier',
+                textShadowColor: colors.primary,
+                textShadowOffset: { width: 2, height: 2 },
+                textShadowRadius: 4,
+              }}
+            >
+              {typedText}
+              {showCursor && isTypingRef.current && '|'}
+            </Text>
+          </View>
+
+          {/* How to play button */}
+          <TouchableOpacity
+            onPress={() => setShowInstructions(true)}
+            style={{
+              position: 'absolute',
+              top: 50,
+              right: 20,
+              zIndex: 10,
+              backgroundColor: colors.secondary,
+              borderRadius: 20,
+              width: 40,
+              height: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 24, color: colors.accent }}>ℹ️</Text>
+          </TouchableOpacity>
+
+          {/* Instructions Modal with Y2K styling */}
+          <Modal visible={showInstructions} transparent animationType="fade">
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(0,0,0,0.85)',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: colors.primary,
+                  padding: 25,
+                  borderRadius: 24,
+                  maxWidth: '85%',
+                  borderWidth: 3,
+                  borderColor: colors.accent,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 26,
+                    color: colors.accent,
+                    fontWeight: '700',
+                    marginBottom: 15,
+                    textAlign: 'center',
+                  }}
+                >
+                  How to Play
+                </Text>
+                <Text style={{ fontSize: 16, color: colors.accent, marginBottom: 8 }}>
+                  1. Type your guess using transliteration
+                </Text>
+                <Text style={{ fontSize: 16, color: colors.accent, marginBottom: 8 }}>
+                  2. Hit return/enter to submit
+                </Text>
+                <Text style={{ fontSize: 16, color: colors.accent, marginBottom: 8 }}>
+                  3. Colors show feedback:
+                </Text>
+                <View
+                  style={{
+                    backgroundColor: colors.correct,
+                    padding: 8,
+                    borderRadius: 12,
+                    marginLeft: 10,
+                    marginBottom: 6,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, color: '#fff' }}>
+                    💜 Purple: correct letter and position
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: colors.present,
+                    padding: 8,
+                    borderRadius: 12,
+                    marginLeft: 10,
+                    marginBottom: 6,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, color: '#fff' }}>
+                    💗 Pink: correct letter, wrong position
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: colors.absent,
+                    padding: 8,
+                    borderRadius: 12,
+                    marginLeft: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, color: '#fff' }}>
+                    🖤 Dark: not in the word
+                  </Text>
+                </View>
+                <Text style={{ fontSize: 16, color: colors.accent, marginTop: 6 }}>
+                  4. You get 6 tries!
+                </Text>
+                <Text style={{ fontSize: 16, color: colors.accent, marginTop: 6 }}>
+                  5. Use 🔊 to hear the word!
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => setShowInstructions(false)}
+                  style={{
+                    marginTop: 20,
+                    alignSelf: 'center',
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    backgroundColor: colors.accent,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Text style={{ color: colors.primary, fontSize: 18, fontWeight: 'bold' }}>
+                    Got it! ✨
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-      
-            {/* Game Over Modal */}
-            <Modal visible={isGameOver} transparent animationType="slide">
-              <View style={{
+          </Modal>
+
+          <Text
+            style={{
+              fontSize: 18,
+              marginBottom: 30,
+              textAlign: 'center',
+              color: colors.accent,
+              fontWeight: '500',
+            }}
+          >
+            Guess the word ({currentWord.translit.length} letters)
+          </Text>
+
+          {/* Game Grid with Animated Tiles */}
+          <View style={{ justifyContent: 'center' }}>
+            {Array.from({ length: maxGuesses }).map((_, rowIndex) => {
+              const guess =
+                rowIndex < guesses.length
+                  ? guesses[rowIndex].split('')
+                  : rowIndex === guesses.length
+                  ? currentGuess
+                  : [];
+
+              return (
+                <View
+                  key={rowIndex}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginBottom: 10,
+                  }}
+                >
+                  {Array.from({ length: currentWord.translit.length }).map((_, colIndex) => {
+                    return (
+                      <AnimatedTile
+                        key={colIndex}
+                        letter={guess[colIndex] || ''}
+                        color={
+                          rowIndex < guesses.length
+                            ? getBoxColor(guess[colIndex], colIndex, guess, currentWord.translit)
+                            : 'transparent'
+                        }
+                        boxSize={boxSize}
+                        delay={colIndex * 100}
+                        shouldFlip={rowIndex < guesses.length}
+                      />
+                    );
+                  })}
+                </View>
+              );
+            })}
+          </View>
+
+          {/* Game Over Modal with Y2K styling */}
+          <Modal visible={isGameOver} transparent animationType="slide">
+            <View
+              style={{
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: 'rgba(0,0,0,0.6)',
-              }}>
-                <View style={{
-                  backgroundColor: '#1e1e1e',
+                backgroundColor: 'rgba(0,0,0,0.85)',
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: colors.primary,
                   padding: 30,
-                  borderRadius: 16,
+                  borderRadius: 28,
                   alignItems: 'center',
                   maxWidth: '85%',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 6,
-                    elevation: 8,
-                }}>
-                  <Text  style={{
-              fontSize: 24,
-              fontWeight: '700',
-              marginBottom: 10,
-              color: didWin ? '#6aaa64' : '#e74c3c',
-              fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'sans-serif',
-            }}>
-                    {didWin ? '🎉 You Won!' : '😞 Game Over'}
+                  borderWidth: 4,
+                  borderColor: colors.accent,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 32,
+                    fontWeight: '700',
+                    marginBottom: 15,
+                    color: colors.accent,
+                  }}
+                >
+                  {didWin ? '🎉 You Won! 🎉' : '💜 Game Over 💜'}
+                </Text>
+                <Text style={{ fontSize: 20, color: colors.accent, marginVertical: 8 }}>
+                  Word: <Text style={{ fontWeight: 'bold' }}>{currentWord.translit}</Text>
+                </Text>
+                <Text style={{ fontSize: 20, color: colors.accent, marginVertical: 8 }}>
+                  Telugu: <Text style={{ fontWeight: 'bold' }}>{currentWord.telugu}</Text>
+                </Text>
+                <TouchableOpacity
+                  onPress={() => speakerButton(currentWord.translit)}
+                  style={{
+                    backgroundColor: colors.secondary,
+                    borderRadius: 20,
+                    padding: 12,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: 28 }}>🔊</Text>
+                </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontStyle: 'italic',
+                    color: colors.accent,
+                    marginTop: 15,
+                    textAlign: 'center',
+                  }}
+                >
+                  {currentWord.definition}
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    const newWord = wordList[Math.floor(Math.random() * wordList.length)];
+                    setCurrentWord(newWord);
+                    setCurrentGuess([]);
+                    setCursor(0);
+                    setGuesses([]);
+                    setIsGameOver(false);
+                    setDidWin(false);
+                  }}
+                  style={{
+                    marginTop: 25,
+                    paddingVertical: 14,
+                    paddingHorizontal: 30,
+                    backgroundColor: colors.accent,
+                    borderRadius: 22,
+                  }}
+                >
+                  <Text style={{ color: colors.primary, fontSize: 18, fontWeight: 'bold' }}>
+                    Play Again ✨
                   </Text>
-                  <Text style={{ fontSize: 18, color: '#eee', marginVertical: 5 }}>
-              Word: <Text style={{ fontWeight: 'bold' }}>{currentWord.translit}</Text>
-            </Text>
-            <Text style={{ fontSize: 18, color: '#eee', marginVertical: 5 }}>
-              Telugu: <Text style={{ fontWeight: 'bold' }}>{currentWord.telugu}</Text>
-            </Text>
-            <TouchableOpacity
-                onPress={() => speakerButton(currentWord.translit)}
-                style={{ marginLeft: 10 }}
-                accessibilityLabel="Pronounce Telugu word"
-            >
-                <Text style={{ fontSize: 22 }}>🔊</Text>
-            </TouchableOpacity>
-            <Text style={{
-              fontSize: 16,
-              fontStyle: 'italic',
-              color: '#aaa',
-              marginTop: 10,
-              textAlign: 'center'
-            }}>
-              Definition: {currentWord.definition}
-            </Text>
-      
-                  <View style={{ marginTop: 25 }}>
-                    <Button
-                      title="Play Again"
-                    color="#6aaa64"
-                      onPress={() => {
-                        const newWord = wordList[Math.floor(Math.random() * wordList.length)];
-                        setCurrentWord(newWord);
-                        console.log('new word is ', newWord);
-                        setCurrentGuess([]);
-                        setCursor(0);
-                        setGuesses([]);
-                        setIsGameOver(false);
-                        setDidWin(false);
-                      }}
-                    />
-                  </View>
-                </View>
+                </TouchableOpacity>
               </View>
-            </Modal>
-      
-            {/* Invisible TextInput to capture keystrokes */}
-            <TextInput
+            </View>
+          </Modal>
+
+          <TextInput
             ref={inputRef}
             style={{ height: 1, width: 1, opacity: 0 }}
             autoFocus
             blurOnSubmit={false}
             onKeyPress={handleKeyPress}
             onSubmitEditing={() => {
-                if (
+              if (
                 currentGuess.length === currentWord.translit.length &&
                 currentGuess.every(letter => letter)
-                ) {
+              ) {
                 const guessStr = currentGuess.join('');
                 const newGuesses = [...guesses, guessStr];
                 setGuesses(newGuesses);
@@ -445,17 +487,112 @@ useEffect(() => {
                 const isOutOfTries = newGuesses.length === maxGuesses;
 
                 if (isCorrect || isOutOfTries) {
-                    setIsGameOver(true);
-                    setDidWin(isCorrect);
+                  setIsGameOver(true);
+                  setDidWin(isCorrect);
                 }
-                }
+              }
             }}
-            />
-          </ScrollView>
-        </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
-      );      
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+  );
+};
 
+// Animated Tile Component with Flip Animation
+const AnimatedTile = ({ letter, color, boxSize, delay, shouldFlip }) => {
+  const flipAnim = useSharedValue(0);
+  const scaleAnim = useSharedValue(1);
+
+  useEffect(() => {
+    if (shouldFlip && letter) {
+      // Flip animation
+      flipAnim.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(1, {
+          duration: 400,
+          delay: delay,
+          easing: Easing.out(Easing.ease),
+        })
+      );
+    }
+  }, [shouldFlip, letter]);
+
+  useEffect(() => {
+    if (letter && !shouldFlip) {
+      // Pop animation when typing
+      scaleAnim.value = withSequence(
+        withSpring(1.15, { damping: 10, stiffness: 300 }),
+        withSpring(1, { damping: 10, stiffness: 300 })
+      );
+    }
+  }, [letter]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const rotateX = interpolate(flipAnim.value, [0, 0.5, 1], [0, 90, 180]);
+    const backgroundColor =
+      flipAnim.value > 0.5
+        ? color
+        : 'transparent';
+
+    return {
+      transform: [
+        { perspective: 1000 },
+        { rotateX: `${rotateX}deg` },
+        { scale: scaleAnim.value },
+      ],
+      backgroundColor,
+    };
+  });
+
+   // Counter-rotate the text to keep it upright
+  const textAnimatedStyle = useAnimatedStyle(() => {
+    const rotateX = interpolate(flipAnim.value, [0, 0.5, 1], [0, -90, -180]);
+    return {
+      transform: [
+        { perspective: 1000 },
+        { rotateX: `${rotateX}deg` },
+      ],
+    };
+  });
+
+  const colors = {
+    primary: '#6B3F69',
+    accent: '#DDC3C3',
+  };
+
+  return (
+    <Animated.View
+      style={[
+        {
+          width: boxSize,
+          height: boxSize,
+          margin: 4,
+          borderWidth: 2,
+          borderColor: letter ? colors.accent : colors.primary,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 12,
+        },
+        animatedStyle,
+      ]}
+    >
+      <Animated.Text
+        style={[
+          {
+            fontSize: boxSize * 0.5,
+            fontWeight: 'bold',
+            color: color === 'transparent' ? colors.accent : '#fff',
+          },
+          textAnimatedStyle,
+        ]}
+      >
+        {letter.toUpperCase()}
+      </Animated.Text>
+    </Animated.View>
+  );
+
+  
 };
 
 export default GameScreen;
