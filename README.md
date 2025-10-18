@@ -45,6 +45,6 @@ Clone the repo and run locally with Expo:
 
 ```bash
 git clone https://github.com/yourusername/telugu-wordle.git
-cd telugu-wordle
-npm install
-npx expo start
+cd TeluguWorlde
+cd my-app
+npm start
