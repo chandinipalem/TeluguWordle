@@ -22,16 +22,17 @@ export default {
     },
     web: {
       bundler: "metro",
-      output: "static",
-      favicon: "./assets/images/favicon.png",
-      assetPrefix: "/TeluguWordle/",
-      // 👇 Add this:
-      build: {
-        publicPath: "/TeluguWordle/",
+      output: "single",
+      "routing": {
+        "type": "hash"
       },
+      favicon: "./assets/images/favicon.png",
+      
     },
     plugins: [
       "expo-router",
+      "expo-font", 
+      "expo-web-browser",
       [
         "expo-splash-screen",
         {
