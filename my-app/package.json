@@ -10,8 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "reset-project": "node ./scripts/reset-project.js",
-    "predeploy": "expo export --platform web && node patch-base-tag.js && touch dist/.nojekyll",
-    "deploy": "gh-pages --nojekyll --dotfiles --message \"Deploy TeluguWordle\" -d dist"
+    "predeploy": "expo export --platform web --output-dir dist && node patch-base-tag.js && echo '' > dist/.nojekyll",    "deploy": "gh-pages --nojekyll --dotfiles --message \"Deploy TeluguWordle\" -d dist"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.3.10",
