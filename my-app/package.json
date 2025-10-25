@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "main": "expo-router/entry",
-  "homepage": "https://chandinipalem.github.io/",
+  "homepage": "https://chandinipalem.github.io/TeluguWordle",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",

@@ -27,6 +27,8 @@ export default {
         "type": "hash"
       },
       favicon: "./assets/images/favicon.png",
+      assetPrefix: "/TeluguWordle/",
+
       
     },
     plugins: [
